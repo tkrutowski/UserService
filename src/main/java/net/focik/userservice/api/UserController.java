@@ -5,13 +5,15 @@ import lombok.extern.log4j.Log4j2;
 import net.focik.userservice.domain.AppUser;
 import net.focik.userservice.domain.exceptions.EmailAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.ExceptionHandling;
+import net.focik.userservice.domain.exceptions.UserAlreadyExistsException;
+import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import net.focik.userservice.domain.port.primary.IGetUserUseCase;
+import net.focik.userservice.domain.port.primary.IRegisterUserUseCase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -21,11 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController extends ExceptionHandling {
 
     private final IGetUserUseCase getUserUseCase;
+    private final IRegisterUserUseCase registerUserUseCase;
 
-//    @PostMapping
-//    public Integer addGasConnection(@RequestBody GasConnectionDbDto gasConnectionDbDto){
-//        return getGasConnectionUseCase.addGasConnection(gasConnectionDbDto);
-//    }
 
     @GetMapping
 //    ResponseEntity<AppUser> getUser(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password){
@@ -39,6 +38,13 @@ public class UserController extends ExceptionHandling {
             return new ResponseEntity<>( null, HttpStatus.NOT_FOUND);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AppUser> register(@RequestBody AppUser user) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
+        int i=0;
+        AppUser newUser = registerUserUseCase.registerUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
+        return new ResponseEntity<>(newUser, OK);
     }
 
     @GetMapping("/home")

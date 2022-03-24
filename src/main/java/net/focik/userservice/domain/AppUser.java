@@ -12,20 +12,23 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Table(name = "users")
 public class AppUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String firstName;
     private String lastName;
-    private String userName;
+    private String username;
     private String email;
     private String password;
     private boolean enabled;
     private boolean tokenExpired;
+    private Date joinDate;
     private Date lastLoginDate;
+    private Date lastLoginDateDisplay;
     private boolean isNotLocked;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
