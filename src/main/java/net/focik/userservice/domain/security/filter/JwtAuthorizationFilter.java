@@ -2,14 +2,13 @@ package net.focik.userservice.domain.security.filter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.focik.userservice.domain.share.SecurityConstant;
+import net.focik.userservice.domain.security.constant.SecurityConstant;
 import net.focik.userservice.domain.utility.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -19,11 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static net.focik.userservice.domain.share.SecurityConstant.TOKEN_PREFIX;
+import static net.focik.userservice.domain.security.constant.SecurityConstant.TOKEN_PREFIX;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
+@Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
 

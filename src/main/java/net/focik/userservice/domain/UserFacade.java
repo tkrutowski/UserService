@@ -20,7 +20,7 @@ public class UserFacade {
 //        return userService.saveUser(user);
 //    }
 //
-//    public AppUser getUser(String username) {
-//         return userService.getUser(username);
-//    }
+    public AppUser findUserByUsername(String username) {
+         return userService.findUserByUsername(username);
+    }
 }

@@ -7,5 +7,5 @@ import java.util.Optional;
 
 interface IUserDtoRepository extends JpaRepository<AppUser, Long> {
 
-    Optional<AppUser> getByUserName(String username);
+    Optional<AppUser> getByUsername(String username);
 }

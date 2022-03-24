@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import net.focik.userservice.domain.UserPrincipal;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,29 +11,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
-import static net.focik.userservice.domain.share.SecurityConstant.*;
+import static net.focik.userservice.domain.security.constant.SecurityConstant.*;
 
 @Component
 public class JwtTokenProvider {
 
-    //    @Value("${jwt.secret: defywuvUKYOmqa6lMC7BgUlADXlKuq4CPYc}")
-    private final String secret = "defywuvUKYOmqa6lMC7BgUlADXlKuq4CPYc";
-
-    @Value("${jwt.secret2}")
-    private String secret2;
+    @Value("${jwt.secret}")
+    private String secret;
 
     public String generateJwtAccessToken(UserPrincipal userPrincipal) {
         String[] claims = getClaimsFromUser(userPrincipal);

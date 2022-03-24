@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static net.focik.userservice.domain.security.constant.UserConstant.*;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -36,15 +35,17 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser byUsername = userRepository.findUserByUsername(username);
 
-        if (byUsername == null)
-            throw new UsernameNotFoundException("User not found by username: " + username);
+        if (byUsername == null){
+            log.error(NO_USER_FOUND_BY_USERNAME + username);
+            throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
+        }
         else {
             byUsername.setLastLoginDateDisplay(byUsername.getLastLoginDate());
             byUsername.setLastLoginDate(new Date());
             userRepository.save(byUsername);
 
             UserPrincipal userPrincipal = new UserPrincipal(byUsername);
-            log.info("Returning found user by username: " + username);
+            log.info(FOUND_USER_BY_USERNAME + username);
             return userPrincipal;
         }
     }

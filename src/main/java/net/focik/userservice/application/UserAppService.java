@@ -16,8 +16,8 @@ public class UserAppService implements IGetUserUseCase, IRegisterUserUseCase {
     private final UserFacade userFacade;
 
     @Override
-    public AppUser getUserByName(String name) {
-        return null;// userFacade.getUser(name);
+    public AppUser findUserByUsername(String username) {
+        return userFacade.findUserByUsername(username);
     }
 
     @Override

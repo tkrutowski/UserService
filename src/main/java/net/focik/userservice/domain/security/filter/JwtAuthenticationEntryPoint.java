@@ -4,19 +4,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.focik.userservice.domain.HttpResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static net.focik.userservice.domain.share.SecurityConstant.FORBIDDEN_MESSAGE;
+import static net.focik.userservice.domain.security.constant.SecurityConstant.FORBIDDEN_MESSAGE;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * Nadpisuje oryginalny   response.sendError(403, "Access Denied");
  */
+@Component
 public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
 
     @Override
