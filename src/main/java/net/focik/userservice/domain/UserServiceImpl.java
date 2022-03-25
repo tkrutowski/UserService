@@ -27,7 +27,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Slf4j
 @Transactional
 @Qualifier("userDetailsService")
-public class UserService implements UserDetailsService {
+public class UserServiceImpl implements IUserService, UserDetailsService {
     private final IAppUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -50,11 +50,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public AppUser register(String firstName, String lastName, String username, String email) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
+    @Override
+    public AppUser addNewUser(String firstName, String lastName, String username, String password, String email, boolean enabled,
+                              boolean isNotLocked) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
         validateNewUsernameAndEmail(EMPTY, username, email);
         AppUser user = new AppUser();
-        //user.setUserId(generateUserId());
-        String password = generatePassword();
         String encodedPassword = encodePassword(password);
         user.setFirstName(firstName);
         user.setLastName(lastName);
@@ -62,14 +62,17 @@ public class UserService implements UserDetailsService {
         user.setEmail(email);
         user.setJoinDate(new Date());
         user.setPassword(encodedPassword);
-        user.setEnabled(true);
-        user.setNotLocked(true);
+        user.setEnabled(enabled);
+        user.setNotLocked(isNotLocked);
 //        user.setRole(ROLE_USER.name());
 //        user.setAuthorities(ROLE_USER.getAuthorities());
-//        user.setProfileImageUrl(getTemporaryProfileImageUrl());
         userRepository.save(user);
-        log.info("New user password: " + password);
         return user;
+    }
+
+    @Override
+    public AppUser updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail) {
+        return null;
     }
 
     public List<AppUser> getUsers() {
@@ -108,11 +111,6 @@ public class UserService implements UserDetailsService {
             }
             return null;
         }
-    }
-
-
-    private String generatePassword() {
-        return RandomStringUtils.randomAlphanumeric(10);
     }
 
     private String encodePassword(String password) {

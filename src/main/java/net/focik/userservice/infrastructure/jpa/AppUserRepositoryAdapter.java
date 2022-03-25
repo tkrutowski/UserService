@@ -41,6 +41,11 @@ public class AppUserRepositoryAdapter implements IAppUserRepository {
 
     @Override
     public AppUser findUserByEmail(String email) {
-        return null;
+        Optional<AppUser> byEmail = userDtoRepository.getByEmail(email);
+
+        if (byEmail.isEmpty())
+            return null;
+
+        return byEmail.get();
     }
 }

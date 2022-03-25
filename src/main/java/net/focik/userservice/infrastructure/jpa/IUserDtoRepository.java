@@ -8,4 +8,5 @@ import java.util.Optional;
 interface IUserDtoRepository extends JpaRepository<AppUser, Long> {
 
     Optional<AppUser> getByUsername(String username);
+    Optional<AppUser> getByEmail(String email);
 }
