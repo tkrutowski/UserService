@@ -16,4 +16,6 @@ public interface IAppUserRepository {
     AppUser findUserByEmail(String email);
 
     AppUser findUserById(Long id);
+
+    void deleteUser(Long id);
 }

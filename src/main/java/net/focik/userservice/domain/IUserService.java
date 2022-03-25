@@ -15,7 +15,8 @@ IUserService {
     AppUser findUserByEmail(String email);
     List<AppUser> getUsers();
 
-//    void deleteUser(Long id);
+    void deleteUser(Long id);
+
 //    void resetPassword(String email);
 //    void changePassword(String currentUser, String currentPassword, String newPassword);
 //    void updateRole(String currentUser, Collection<Role> roles);

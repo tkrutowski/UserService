@@ -8,6 +8,7 @@ import net.focik.userservice.domain.exceptions.EmailAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.ExceptionHandling;
 import net.focik.userservice.domain.exceptions.UserAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserNotFoundException;
+import net.focik.userservice.domain.port.primary.IDeleteUserUseCase;
 import net.focik.userservice.domain.port.primary.IGetUserUseCase;
 import net.focik.userservice.domain.port.primary.IAddNewUserUseCase;
 import net.focik.userservice.domain.port.primary.IUpdateUserUseCase;
@@ -34,6 +35,7 @@ public class UserController extends ExceptionHandling {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final IUpdateUserUseCase updateUserUseCase;
+    private final IDeleteUserUseCase deleteUserUseCase;
 
     @GetMapping
 //    ResponseEntity<AppUser> getUser(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password){
@@ -74,6 +76,11 @@ public class UserController extends ExceptionHandling {
         return new ResponseEntity<>(loginUser, jwtHeader, OK);
     }
 
+    @DeleteMapping("/del/{id}")
+    public ResponseEntity deleteUser(@PathVariable Long id){
+        deleteUserUseCase.deleteUserById(id);
+        return new ResponseEntity<>(OK);
+    }
     private HttpHeaders getJwtHeader(UserPrincipal user) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtAccessToken(user));

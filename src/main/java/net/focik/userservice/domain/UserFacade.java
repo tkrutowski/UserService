@@ -21,4 +21,8 @@ public class UserFacade {
     public AppUser updateUser(Long id, String firstName, String lastName, String username, String email) {
         return userService.updateUser(id, firstName, lastName, username, email);
     }
+
+    public void deleteUser(Long id) {
+        userService.deleteUser(id);
+    }
 }

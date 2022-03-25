@@ -58,4 +58,9 @@ public class AppUserRepositoryAdapter implements IAppUserRepository {
 
         return byId.get();
     }
+
+    @Override
+    public void deleteUser(Long id) {
+        userDtoRepository.deleteById(id);
+    }
 }
