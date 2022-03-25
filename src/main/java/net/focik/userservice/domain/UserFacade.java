@@ -3,6 +3,8 @@ package net.focik.userservice.domain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class UserFacade {
@@ -24,5 +26,17 @@ public class UserFacade {
 
     public void deleteUser(Long id) {
         userService.deleteUser(id);
+    }
+
+    public void changePassword(Long id, String oldPassword, String newPassword) {
+        userService.changePassword(id, oldPassword, newPassword);
+    }
+
+    public AppUser findUserById(Long id) {
+        return userService.findUserById(id);
+    }
+
+    public List<AppUser> getAllUsers() {
+        return userService.getUsers();
     }
 }

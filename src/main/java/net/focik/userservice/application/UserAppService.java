@@ -3,17 +3,15 @@ package net.focik.userservice.application;
 import lombok.RequiredArgsConstructor;
 import net.focik.userservice.domain.AppUser;
 import net.focik.userservice.domain.UserFacade;
-import net.focik.userservice.domain.port.primary.IDeleteUserUseCase;
-import net.focik.userservice.domain.port.primary.IGetUserUseCase;
-import net.focik.userservice.domain.port.primary.IAddNewUserUseCase;
-import net.focik.userservice.domain.port.primary.IUpdateUserUseCase;
+import net.focik.userservice.domain.port.primary.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class UserAppService implements IGetUserUseCase, IAddNewUserUseCase, IUpdateUserUseCase, IDeleteUserUseCase {
+public class UserAppService implements IGetUserUseCase, IAddNewUserUseCase, IUpdateUserUseCase,
+        IDeleteUserUseCase, IChangePasswordUseCase {
 
     private final UserFacade userFacade;
 
@@ -23,8 +21,13 @@ public class UserAppService implements IGetUserUseCase, IAddNewUserUseCase, IUpd
     }
 
     @Override
+    public AppUser findUserById(Long id) {
+        return userFacade.findUserById(id);
+    }
+
+    @Override
     public List<AppUser> getAllUsers() {
-        return null;
+        return userFacade.getAllUsers();
     }
 
     @Override
@@ -41,5 +44,10 @@ public class UserAppService implements IGetUserUseCase, IAddNewUserUseCase, IUpd
     @Override
     public void deleteUserById(Long id) {
         userFacade.deleteUser(id);
+    }
+
+    @Override
+    public void changePassword(Long id, String oldPassword, String newPassword) {
+        userFacade.changePassword(id, oldPassword, newPassword);
     }
 }

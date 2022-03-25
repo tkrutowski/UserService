@@ -91,6 +91,19 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
+    public void changePassword(Long idUser, String currentPassword, String newPassword) {
+        AppUser userById = findUserById(idUser);
+        if(userById == null){
+            throw new UserNotFoundException(NO_USER_FOUND_BY_ID + idUser);
+        }
+
+        if(userById.getPassword().equals(encodePassword(currentPassword))){
+            userById.setPassword(encodePassword(newPassword));
+            userRepository.save(userById);
+        }
+    }
+
+    @Override
     public AppUser findUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
