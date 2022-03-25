@@ -21,7 +21,7 @@ public class AppUserRepositoryAdapter implements IAppUserRepository {
 
     @Override
     public AppUser findUserByUsername(String username) {
-        Optional<AppUser> byUserName = userDtoRepository.getByUsername(username);
+        Optional<AppUser> byUserName = userDtoRepository.findByUsername(username);
 
         if (byUserName.isEmpty())
             return null;
@@ -41,11 +41,21 @@ public class AppUserRepositoryAdapter implements IAppUserRepository {
 
     @Override
     public AppUser findUserByEmail(String email) {
-        Optional<AppUser> byEmail = userDtoRepository.getByEmail(email);
+        Optional<AppUser> byEmail = userDtoRepository.findByEmail(email);
 
         if (byEmail.isEmpty())
             return null;
 
         return byEmail.get();
+    }
+
+    @Override
+    public AppUser findUserById(Long id) {
+        int i=0;
+        Optional<AppUser> byId = userDtoRepository.findById(id);
+        if (byId.isEmpty())
+            return null;
+
+        return byId.get();
     }
 }

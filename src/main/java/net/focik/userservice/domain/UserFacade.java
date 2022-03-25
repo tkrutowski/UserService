@@ -13,13 +13,12 @@ public class UserFacade {
                                 String email, boolean enabled, boolean isNotLocked) {
         return userService.addNewUser(firstName, lastName, username, password, email, enabled, isNotLocked);
     }
-//
-//
-//    public AppUser addUser(AppUser user) {
-//        return userService.saveUser(user);
-//    }
-//
+
     public AppUser findUserByUsername(String username) {
          return userService.findUserByUsername(username);
+    }
+
+    public AppUser updateUser(Long id, String firstName, String lastName, String username, String email) {
+        return userService.updateUser(id, firstName, lastName, username, email);
     }
 }

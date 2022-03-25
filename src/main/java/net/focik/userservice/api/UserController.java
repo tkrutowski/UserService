@@ -10,6 +10,7 @@ import net.focik.userservice.domain.exceptions.UserAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import net.focik.userservice.domain.port.primary.IGetUserUseCase;
 import net.focik.userservice.domain.port.primary.IAddNewUserUseCase;
+import net.focik.userservice.domain.port.primary.IUpdateUserUseCase;
 import net.focik.userservice.domain.utility.JwtTokenProvider;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class UserController extends ExceptionHandling {
     private final IAddNewUserUseCase addNewUserUseCase;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-
+    private final IUpdateUserUseCase updateUserUseCase;
 
     @GetMapping
 //    ResponseEntity<AppUser> getUser(@RequestParam(name = "username") String username, @RequestParam(name = "password") String password){
@@ -54,6 +55,14 @@ public class UserController extends ExceptionHandling {
         AppUser newUser = addNewUserUseCase.addNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(),
                 user.getEmail(), user.isEnabled(), user.isNotLocked());
         return new ResponseEntity<>(newUser, OK);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
+        int i=0;
+        AppUser updatedUser = updateUserUseCase.updateUser(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
+
+        return new ResponseEntity<>(updatedUser, OK);
     }
 
     @PostMapping("/login")

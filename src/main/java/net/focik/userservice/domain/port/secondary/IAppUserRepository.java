@@ -14,4 +14,6 @@ public interface IAppUserRepository {
     List<AppUser> findAll();
 
     AppUser findUserByEmail(String email);
+
+    AppUser findUserById(Long id);
 }

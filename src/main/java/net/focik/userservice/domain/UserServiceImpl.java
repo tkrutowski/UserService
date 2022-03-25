@@ -6,7 +6,6 @@ import net.focik.userservice.domain.exceptions.EmailAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import net.focik.userservice.domain.port.secondary.IAppUserRepository;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,7 +52,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public AppUser addNewUser(String firstName, String lastName, String username, String password, String email, boolean enabled,
                               boolean isNotLocked) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
-        validateNewUsernameAndEmail(EMPTY, username, email);
+        validateNewUsernameAndEmail(0L, username, email);
         AppUser user = new AppUser();
         String encodedPassword = encodePassword(password);
         user.setFirstName(firstName);
@@ -71,29 +70,46 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     }
 
     @Override
-    public AppUser updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail) {
-        return null;
+    public AppUser updateUser(Long id, String newFirstName, String newLastName, String newUsername, String newEmail) {
+        AppUser currentUser = validateNewUsernameAndEmail(id, newUsername, newEmail);
+        currentUser.setFirstName(newFirstName);
+        currentUser.setLastName(newLastName);
+        currentUser.setUsername(newUsername);
+        currentUser.setEmail(newEmail);
+        userRepository.save(currentUser);
+        return currentUser;
     }
 
+    @Override
     public List<AppUser> getUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public AppUser findUserByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
 
+
+
+    @Override
+    public AppUser findUserById(Long id) {
+        return userRepository.findUserById(id);
+    }
+
+
+    @Override
     public AppUser findUserByEmail(String email) {
         return userRepository.findUserByEmail(email);
     }
 
-    private AppUser validateNewUsernameAndEmail(String currentUsername, String newUsername, String newEmail) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
+    private AppUser validateNewUsernameAndEmail(Long currentId, String newUsername, String newEmail) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
         AppUser userByNewUsername = findUserByUsername(newUsername);
         AppUser userByNewEmail = findUserByEmail(newEmail);
-        if(StringUtils.isNotBlank(currentUsername)) {
-            AppUser currentUser = findUserByUsername(currentUsername);
+        if(currentId > 0) {
+            AppUser currentUser = findUserById(currentId);
             if(currentUser == null) {
-                throw new UserNotFoundException(NO_USER_FOUND_BY_USERNAME + currentUsername);
+                throw new UserNotFoundException(NO_USER_FOUND_BY_ID + currentId);
             }
             if(userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
                 throw new UserAlreadyExistsException(USERNAME_ALREADY_EXISTS);
