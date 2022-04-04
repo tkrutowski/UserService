@@ -1,6 +1,7 @@
 package net.focik.userservice.domain;
 
 import lombok.RequiredArgsConstructor;
+import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public class UserFacade {
 
     private final IUserService userService;
+    private final RoleService roleService;
 
     public AppUser registerUser(String firstName, String lastName, String username, String password,
                                 String email, boolean enabled, boolean isNotLocked) {
@@ -38,5 +40,16 @@ public class UserFacade {
 
     public List<AppUser> getAllUsers() {
         return userService.getUsers();
+    }
+
+    public List<Role> getAllRoles() {
+        return roleService.getAllRoles();
+    }
+
+    public void addRoleToUser(Long idUser, Long idRole) {
+        AppUser userById = userService.findUserById(idUser);
+
+        AppUser userWithNewRole = roleService.addRoleToUser(userService.findUserById(idUser), idRole);
+        userService.saveUser(userWithNewRole);
     }
 }

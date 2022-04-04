@@ -39,4 +39,8 @@ public class AppUser {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+
+    public void addRole(Role role){
+        this.roles.add(role);
+    }
 }

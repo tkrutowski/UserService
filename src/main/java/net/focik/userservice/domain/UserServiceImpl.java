@@ -6,7 +6,6 @@ import net.focik.userservice.domain.exceptions.EmailAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import net.focik.userservice.domain.port.secondary.IAppUserRepository;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 
 import static net.focik.userservice.domain.security.constant.UserConstant.*;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Service
 @RequiredArgsConstructor
@@ -43,9 +41,9 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             byUsername.setLastLoginDate(new Date());
             userRepository.save(byUsername);
 
-            UserPrincipal userPrincipal = new UserPrincipal(byUsername);
+            SecureUser secureUser = new SecureUser(byUsername);
             log.info(FOUND_USER_BY_USERNAME + username);
-            return userPrincipal;
+            return secureUser;
         }
     }
 
@@ -101,6 +99,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
             userById.setPassword(encodePassword(newPassword));
             userRepository.save(userById);
         }
+    }
+
+    @Override
+    public AppUser saveUser(AppUser user) {
+       return userRepository.save(user);
     }
 
     @Override

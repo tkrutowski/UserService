@@ -39,13 +39,6 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(HttpStatus.BAD_REQUEST, ACCOUNT_DISABLED);
     }
 
-    private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message){
-        HttpResponse httpResponse = new HttpResponse(httpStatus.value(), httpStatus ,
-                httpStatus.getReasonPhrase().toUpperCase(), message);
-
-        return new ResponseEntity<>(httpResponse, httpStatus);
-    }
-
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<HttpResponse> badCredentialsException() {
@@ -111,11 +104,26 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE);
     }
 
-    @RequestMapping(ERROR_PATH)
-    public ResponseEntity<HttpResponse> notFound404() {
+    //@RequestMapping(ERROR_PATH)
+    public ResponseEntity<HttpResponse> notFound404(Exception exception) {
+        int i=0;
         return createHttpResponse(NOT_FOUND, "There is no mapping for this URL");
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<HttpResponse> tokenExpiredException(RuntimeException exception) {
+        int i=0;
+        return createHttpResponse(UNAUTHORIZED, exception.getMessage());
+    }
+
+
+
+    private ResponseEntity<HttpResponse> createHttpResponse(HttpStatus httpStatus, String message){
+        HttpResponse httpResponse = new HttpResponse(httpStatus.value(), httpStatus ,
+                httpStatus.getReasonPhrase().toUpperCase(), message);
+
+        return new ResponseEntity<>(httpResponse, httpStatus);
+    }
     public String getErrorPath() {
         return ERROR_PATH;
     }
