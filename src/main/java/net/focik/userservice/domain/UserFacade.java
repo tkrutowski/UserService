@@ -1,7 +1,6 @@
 package net.focik.userservice.domain;
 
 import lombok.RequiredArgsConstructor;
-import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -47,9 +46,27 @@ public class UserFacade {
     }
 
     public void addRoleToUser(Long idUser, Long idRole) {
-        AppUser userById = userService.findUserById(idUser);
-
         AppUser userWithNewRole = roleService.addRoleToUser(userService.findUserById(idUser), idRole);
         userService.saveUser(userWithNewRole);
+    }
+
+    public Privilege findPrivilegeByName(String name){
+        return roleService.findPrivilegeByName(name);
+    }
+
+    public void changePrivilegesInUserRole(Long idUser, Long idRole, List<Privilege> privilegeList) {
+        AppUser userById = userService.findUserById(idUser);
+        boolean result = roleService.changePrivilegesInUserRole(userById, idRole, privilegeList);
+
+        if(result)
+            userService.saveUser(userById);
+    }
+
+    public void deleteUsersRoleById(Long idUser, Long idRole) {
+        AppUser userById = userService.findUserById(idUser);
+        boolean result = roleService.deleteRoleFromUser(userById, idRole);
+
+        if(result)
+            userService.saveUser(userById);
     }
 }

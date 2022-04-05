@@ -6,7 +6,9 @@ import net.focik.userservice.api.dto.RoleDto;
 import net.focik.userservice.domain.HttpResponse;
 import net.focik.userservice.domain.Role;
 import net.focik.userservice.domain.exceptions.ExceptionHandling;
+import net.focik.userservice.domain.port.primary.IChangePrivilegeInUserRoleUseCase;
 import net.focik.userservice.domain.port.primary.IAddRoleToUserUseCase;
+import net.focik.userservice.domain.port.primary.IDeleteUsersRoleUseCase;
 import net.focik.userservice.domain.port.primary.IGetUserRolesUseCase;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,8 @@ public class RoleController extends ExceptionHandling {
     private final ModelMapper mapper;
     private final IGetUserRolesUseCase getUserRolesUseCase;
     private final IAddRoleToUserUseCase addRoleToUserUseCase;
+    private final IChangePrivilegeInUserRoleUseCase changePrivilegeInUserRoleUseCase;
+    private final IDeleteUsersRoleUseCase deleteUsersRoleUseCase;
 
 
 
@@ -56,10 +60,19 @@ public class RoleController extends ExceptionHandling {
         return response(HttpStatus.OK, "Dodano role do użytkownika.");
     }
 
+    @DeleteMapping()
+    public ResponseEntity<HttpResponse> deleteRoleFromUser(@RequestParam("userID") Long idUser, @RequestParam("roleID") Long idRole) {
+        deleteUsersRoleUseCase.deleteUsersRoleById(idUser, idRole);
+        return response(HttpStatus.OK, "Role has been deleted from user.");
+    }
+
+
     @PostMapping("/details/add")
-    public ResponseEntity<HttpResponse> addPrivilegToUserRole(@RequestParam("userID") Long idUser, @RequestParam("roleID") Long idRole) {
-        addRoleToUserUseCase.addRoleToUser(idUser, idRole);
-        return response(HttpStatus.OK, "Dodano dostęp do roli użytkownika.");
+    public ResponseEntity<HttpResponse> addPrivilegesToUserRole(@RequestParam("userID") Long idUser,
+                                                                @RequestParam("roleID") Long idRole,
+                                                                @RequestBody List<String> privList) {
+        changePrivilegeInUserRoleUseCase.changePrivilegesInUserRole(idUser, idRole, privList);
+        return response(HttpStatus.OK, "Dodano przywilej do roli użytkownika.");
     }
 
     private ResponseEntity<HttpResponse> response(HttpStatus status, String message){
