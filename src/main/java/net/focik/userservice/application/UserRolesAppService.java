@@ -34,6 +34,11 @@ public class UserRolesAppService implements IGetUserRolesUseCase, IAddRoleToUser
     }
 
     @Override
+    public List<Privilege> getRoleDetails(Long idUser,Long idRole) {
+    return userFacade.getRoleDetails(idUser, idRole);
+    }
+
+    @Override
     public void addRoleToUser(Long idUser, Long idRole) {
        userFacade.addRoleToUser(idUser, idRole);
     }

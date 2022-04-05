@@ -69,4 +69,9 @@ public class UserFacade {
         if(result)
             userService.saveUser(userById);
     }
+
+    public List<Privilege> getRoleDetails(Long idUser, Long idRole) {
+        AppUser userById = userService.findUserById(idUser);
+        return roleService.getRoleDetails(userById, idRole);
+    }
 }

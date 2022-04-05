@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import net.focik.userservice.api.dto.RoleDto;
 import net.focik.userservice.domain.HttpResponse;
+import net.focik.userservice.domain.Privilege;
 import net.focik.userservice.domain.Role;
 import net.focik.userservice.domain.exceptions.ExceptionHandling;
 import net.focik.userservice.domain.port.primary.IChangePrivilegeInUserRoleUseCase;
@@ -66,6 +67,15 @@ public class RoleController extends ExceptionHandling {
         return response(HttpStatus.OK, "Role has been deleted from user.");
     }
 
+
+    @GetMapping("/details")
+    ResponseEntity<List<Privilege>> getRolesDetails(@RequestParam("userID") Long idUser,
+                                                    @RequestParam("roleID") Long idRole){
+//        log.info("USER-SERVICE: Try find user by id: = " + id);
+        List<Privilege> roleDetails = getUserRolesUseCase.getRoleDetails(idUser, idRole);
+//        log.info(user != null ? "USER-SERVICE: Found user by ID = " + id : "USER-SERVICE: Not found user by ID = " + id);
+        return new ResponseEntity<>(roleDetails, HttpStatus.OK);
+    }
 
     @PostMapping("/details/add")
     public ResponseEntity<HttpResponse> addPrivilegesToUserRole(@RequestParam("userID") Long idUser,

@@ -8,6 +8,7 @@ import net.focik.userservice.domain.port.secondary.IPrivilegeRepository;
 import net.focik.userservice.domain.port.secondary.IRoleRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,6 +60,15 @@ public class RoleService {
         return false;
     }
 
+    public boolean deleteRoleFromUser(AppUser user, Long idRole) {
+        int index = findIndex(idRole, (List<Role>) user.getRoles());
+        if (index >= 0) {
+            ((List<Role>) user.getRoles()).remove(index);
+            return true;
+        }
+        return false;
+    }
+
     private int findIndex(Long idRole, List<Role> roles) {
         int index = -1;
         for (Role role:roles) {
@@ -68,5 +78,15 @@ public class RoleService {
             }
         }
         return index;
+    }
+
+
+    public List<Privilege> getRoleDetails(AppUser user, Long idRole) {
+        List<Privilege> privilegeList = new ArrayList<>();
+        int index = findIndex(idRole, (List<Role>) user.getRoles());
+        if (index >= 0) {
+            privilegeList = (List<Privilege>) ((List<Role>) user.getRoles()).get(index).getPrivileges();
+        }
+        return privilegeList;
     }
 }
