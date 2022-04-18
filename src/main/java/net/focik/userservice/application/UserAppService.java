@@ -42,6 +42,16 @@ public class UserAppService implements IGetUserUseCase, IAddNewUserUseCase, IUpd
     }
 
     @Override
+    public void updateIsActive(Long id, boolean isActive) {
+        userFacade.updateIsActive(id, isActive);
+    }
+
+    @Override
+    public void updateIsLock(Long id, boolean isLock) {
+        userFacade.updateIsLock(id, isLock);
+    }
+
+    @Override
     public void deleteUserById(Long id) {
         userFacade.deleteUser(id);
     }

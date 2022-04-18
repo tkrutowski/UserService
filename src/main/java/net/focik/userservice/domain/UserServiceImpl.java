@@ -32,11 +32,10 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser byUsername = userRepository.findUserByUsername(username);
 
-        if (byUsername == null){
+        if (byUsername == null) {
             log.error(NO_USER_FOUND_BY_USERNAME + username);
             throw new UsernameNotFoundException(NO_USER_FOUND_BY_USERNAME + username);
-        }
-        else {
+        } else {
             byUsername.setLastLoginDateDisplay(byUsername.getLastLoginDate());
             byUsername.setLastLoginDate(new Date());
             userRepository.save(byUsername);
@@ -91,11 +90,11 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
     @Override
     public void changePassword(Long idUser, String currentPassword, String newPassword) {
         AppUser userById = findUserById(idUser);
-        if(userById == null){
+        if (userById == null) {
             throw new UserNotFoundException(NO_USER_FOUND_BY_ID + idUser);
         }
 
-        if(userById.getPassword().equals(encodePassword(currentPassword))){
+        if (userById.getPassword().equals(encodePassword(currentPassword))) {
             userById.setPassword(encodePassword(newPassword));
             userRepository.save(userById);
         }
@@ -103,47 +102,80 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
     @Override
     public AppUser saveUser(AppUser user) {
-       return userRepository.save(user);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void updateIsActive(Long id, boolean isActive) {
+        AppUser userById = findUserById(id);
+        if (userById == null)
+            throw new UserNotFoundException("Nie znaleziono użytkownika o ID:" + id);
+
+        userById.setEnabled(isActive);
+
+        saveUser(userById);
+    }
+
+    @Override
+    public void updateIsLock(Long id, boolean isLock) {
+        AppUser userById = findUserById(id);
+        if (userById == null)
+            throw new UserNotFoundException("Nie znaleziono użytkownika o ID:" + id);
+
+        userById.setNotLocked(isLock);
+
+        saveUser(userById);
     }
 
     @Override
     public AppUser findUserByUsername(String username) {
-        return userRepository.findUserByUsername(username);
+        AppUser userByUsername = userRepository.findUserByUsername(username);
+        //TODO przenieść do servisu
+//        if(userByUsername == null)
+//            throw new UserNotFoundException("Nie znaleziono użytkownika o username:"+ username);
+        return userByUsername;
     }
-
 
 
     @Override
     public AppUser findUserById(Long id) {
-        return userRepository.findUserById(id);
+        AppUser userById = userRepository.findUserById(id);
+        //TODO przenieść do servisu
+//        if(userById == null)
+//            throw new UserNotFoundException("Nie znaleziono użytkownika o ID:"+ id);
+        return userById;
     }
 
 
     @Override
     public AppUser findUserByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+        AppUser userByEmail = userRepository.findUserByEmail(email);
+        //TODO przenieść do servisu
+//        if(userByEmail == null)
+//            throw new UserNotFoundException("Nie znaleziono użytkownika o email:"+ email);
+        return userByEmail;
     }
 
     private AppUser validateNewUsernameAndEmail(Long currentId, String newUsername, String newEmail) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
         AppUser userByNewUsername = findUserByUsername(newUsername);
         AppUser userByNewEmail = findUserByEmail(newEmail);
-        if(currentId > 0) {
+        if (currentId > 0) {
             AppUser currentUser = findUserById(currentId);
-            if(currentUser == null) {
+            if (currentUser == null) {
                 throw new UserNotFoundException(NO_USER_FOUND_BY_ID + currentId);
             }
-            if(userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
+            if (userByNewUsername != null && !currentUser.getId().equals(userByNewUsername.getId())) {
                 throw new UserAlreadyExistsException(USERNAME_ALREADY_EXISTS);
             }
-            if(userByNewEmail != null && !currentUser.getId().equals(userByNewEmail.getId())) {
+            if (userByNewEmail != null && !currentUser.getId().equals(userByNewEmail.getId())) {
                 throw new EmailAlreadyExistsException(EMAIL_ALREADY_EXISTS);
             }
             return currentUser;
         } else {
-            if(userByNewUsername != null) {
+            if (userByNewUsername != null) {
                 throw new UserAlreadyExistsException(USERNAME_ALREADY_EXISTS);
             }
-            if(userByNewEmail != null) {
+            if (userByNewEmail != null) {
                 throw new EmailAlreadyExistsException(EMAIL_ALREADY_EXISTS);
             }
             return null;

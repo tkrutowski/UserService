@@ -1,17 +1,16 @@
 package net.focik.userservice.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Table(name = "users")
 public class AppUser {
 
@@ -29,18 +28,25 @@ public class AppUser {
     private Date joinDate;
     private Date lastLoginDate;
     private Date lastLoginDateDisplay;
-    private boolean isNotLocked;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
+    @Column(name = "is_not_locked")
+    private boolean notLocked;
+//    private boolean isNotLocked;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+//    @JoinTable(
+//            name = "users_privileges",
+//            joinColumns = @JoinColumn(
+//                    name = "user_id", referencedColumnName = "id"),
+//            inverseJoinColumns = @JoinColumn(
+//                    name = "privilege_id", referencedColumnName = "id"))
+    private List<Privilege> privileges;
 
 
-    public void addRole(Role role){
-        this.roles.add(role);
+    public void addPrivilege(Privilege privilege){
+        this.privileges.add(privilege);
+    }
+
+    public void deletePrivilege(Privilege privilege) {
+        privileges.remove(privilege);
     }
 }

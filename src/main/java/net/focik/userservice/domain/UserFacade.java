@@ -3,7 +3,9 @@ package net.focik.userservice.domain;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -45,18 +47,19 @@ public class UserFacade {
         return roleService.getAllRoles();
     }
 
+    @Transactional
     public void addRoleToUser(Long idUser, Long idRole) {
         AppUser userWithNewRole = roleService.addRoleToUser(userService.findUserById(idUser), idRole);
         userService.saveUser(userWithNewRole);
     }
 
-    public Privilege findPrivilegeByName(String name){
-        return roleService.findPrivilegeByName(name);
-    }
+//    public Privilege findPrivilegeByName(String name){
+//        return roleService.findPrivilegeByName(name);
+//    }
 
-    public void changePrivilegesInUserRole(Long idUser, Long idRole, List<Privilege> privilegeList) {
+    public void changePrivilegesInUserRole(Long idUser, Long idRole, Map<String, String> privilegeMap) {
         AppUser userById = userService.findUserById(idUser);
-        boolean result = roleService.changePrivilegesInUserRole(userById, idRole, privilegeList);
+        boolean result = roleService.changePrivilegesInUserRole(userById, idRole, privilegeMap);
 
         if(result)
             userService.saveUser(userById);
@@ -64,14 +67,21 @@ public class UserFacade {
 
     public void deleteUsersRoleById(Long idUser, Long idRole) {
         AppUser userById = userService.findUserById(idUser);
-        boolean result = roleService.deleteRoleFromUser(userById, idRole);
+        roleService.deleteRoleFromUser(userById, idRole);
 
-        if(result)
-            userService.saveUser(userById);
+       userService.saveUser(userById);
     }
 
-    public List<Privilege> getRoleDetails(Long idUser, Long idRole) {
+    public Privilege getRoleDetails(Long idUser, Long idRole) {
         AppUser userById = userService.findUserById(idUser);
         return roleService.getRoleDetails(userById, idRole);
+    }
+
+    public void updateIsActive(Long id, boolean isActive) {
+        userService.updateIsActive(id, isActive);
+    }
+
+    public void updateIsLock(Long id, boolean isLock) {
+        userService.updateIsLock(id, isLock);
     }
 }
