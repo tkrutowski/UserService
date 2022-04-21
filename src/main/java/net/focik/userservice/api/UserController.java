@@ -58,6 +58,7 @@ public class UserController extends ExceptionHandling {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN_READ_ALL','USER_READ_ALL')")
     ResponseEntity<List<UserDto>> getUsers(){
         int i=0;
 //        log.info("USER-SERVICE: Try find user by id: = " + id);
@@ -68,6 +69,7 @@ public class UserController extends ExceptionHandling {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN_WRITE_ALL')")
     public ResponseEntity<AppUser> register(@RequestBody AppUser user) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
         int i=0;
         AppUser newUser = addNewUserUseCase.addNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(),
@@ -76,34 +78,28 @@ public class UserController extends ExceptionHandling {
     }
 
     @PutMapping("/update")
-//    @PreAuthorize("hasAnyAuthority('USER_PROFILE_WRITE')")
-    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
-        AppUser updatedUser = null;
-        try {
-            int i =0;
-            updatedUser = updateUserUseCase.updateUser(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
-        }catch (Exception e) {
-            int j = 0;
-            log.info(e.getMessage());
-        }
+    @PreAuthorize("hasAnyAuthority('ADMIN_WRITE_ALL')")
+    public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user){
+        AppUser updatedUser = updateUserUseCase.updateUser(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
         return new ResponseEntity<>(updatedUser, OK);
     }
 
     @PutMapping("/update/active/{id}")
-//    @PreAuthorize("hasAnyAuthority('USER_PROFILE_WRITE')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_WRITE_ALL')")
     public ResponseEntity<HttpResponse> updateUserActive(@PathVariable Long id, @RequestParam("enabled") boolean isEnabled ) {
             updateUserUseCase.updateIsActive(id, isEnabled);
         return response(HttpStatus.OK, "Zaaktualizowano status użytkownika.");
     }
 
     @PutMapping("/update/lock/{id}")
-//    @PreAuthorize("hasAnyAuthority('USER_PROFILE_WRITE')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_WRITE_ALL')")
     public ResponseEntity<HttpResponse> updateUserLock(@PathVariable Long id, @RequestParam("lock") boolean isLock ) {
         updateUserUseCase.updateIsLock(id, isLock);
         return response(HttpStatus.OK, "Zaaktualizowano status użytkownika.");
     }
 
     @PutMapping("/changepass/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN_WRITE_ALL','USER_WRITE')")
     public ResponseEntity<HttpResponse> changePassword(@PathVariable Long id, @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass) {
         changePasswordUseCase.changePassword(id, oldPass, newPass);
         return response(HttpStatus.OK, "Hasło zmienione.");
@@ -121,7 +117,7 @@ public class UserController extends ExceptionHandling {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasAnyAuthority('ADMIN_DELETE')")
+    @PreAuthorize("hasAnyAuthority('ADMIN_DELETE_ALL')")
     public ResponseEntity<HttpResponse> deleteUser(@PathVariable Long id){
         deleteUserUseCase.deleteUserById(id);
         return response(HttpStatus.NO_CONTENT, "Użytkownik usunięty.");

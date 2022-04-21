@@ -11,10 +11,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.persistence.NoResultException;
 import java.io.IOException;
@@ -44,6 +46,11 @@ public class ExceptionHandling implements ErrorController {
     public ResponseEntity<HttpResponse> badCredentialsException() {
         return createHttpResponse(BAD_REQUEST, INCORRECT_CREDENTIALS);
     }
+
+//    @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
+//    public ResponseEntity<HttpResponse> unauthorizedException(HttpClientErrorException exception) {
+//        return createHttpResponse(UNAUTHORIZED, exception.getMessage());
+  //  }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException() {
@@ -91,6 +98,12 @@ public class ExceptionHandling implements ErrorController {
         return createHttpResponse(METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED, supportedMethod));
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<HttpResponse> authenticationException(AuthenticationException exception) {
+        log.error(exception.getMessage());
+        return createHttpResponse(UNAUTHORIZED, exception.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerErrorException(Exception exception) {
         log.error(exception.getMessage());
@@ -116,7 +129,7 @@ public class ExceptionHandling implements ErrorController {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<HttpResponse> tokenExpiredException(RuntimeException exception) {
+    public ResponseEntity<HttpResponse> runtimeException(RuntimeException exception) {
         int i=0;
         return createHttpResponse(UNAUTHORIZED, exception.getMessage());
     }
