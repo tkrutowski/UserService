@@ -5,5 +5,5 @@ import net.focik.userservice.domain.AppUser;
 public interface IAddNewUserUseCase {
 
     AppUser addNewUser(String firstName, String lastName, String username, String password, String email, boolean enabled,
-                       boolean isNotLocked);
+                       boolean isNotLocked, int idEmployee);
 }

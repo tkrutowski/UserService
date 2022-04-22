@@ -24,6 +24,6 @@ public class UserDto {
     private Date lastLoginDateDisplay;
 //    private boolean isNotLocked;
     private boolean notLocked;
-
+    private Integer idEmployee;
 
 }

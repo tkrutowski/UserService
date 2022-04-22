@@ -30,6 +30,7 @@ public class AppUser {
     private Date lastLoginDateDisplay;
     @Column(name = "is_not_locked")
     private boolean notLocked;
+    private Integer idEmployee;
 //    private boolean isNotLocked;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id")

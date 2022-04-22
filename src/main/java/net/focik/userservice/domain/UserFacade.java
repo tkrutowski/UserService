@@ -15,8 +15,8 @@ public class UserFacade {
     private final RoleService roleService;
 
     public AppUser registerUser(String firstName, String lastName, String username, String password,
-                                String email, boolean enabled, boolean isNotLocked) {
-        return userService.addNewUser(firstName, lastName, username, password, email, enabled, isNotLocked);
+                                String email, boolean enabled, boolean isNotLocked, int idEmployee) {
+        return userService.addNewUser(firstName, lastName, username, password, email, enabled, isNotLocked, idEmployee);
     }
 
     public AppUser findUserByUsername(String username) {

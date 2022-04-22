@@ -32,8 +32,8 @@ public class UserAppService implements IGetUserUseCase, IAddNewUserUseCase, IUpd
 
     @Override
     public AppUser addNewUser(String firstName, String lastName, String username, String password, String email, boolean enabled,
-                              boolean isNotLocked) {
-        return userFacade.registerUser(firstName, lastName, username, password, email, enabled, isNotLocked);
+                              boolean isNotLocked, int idEmployee) {
+        return userFacade.registerUser(firstName, lastName, username, password, email, enabled, isNotLocked, idEmployee);
     }
 
     @Override

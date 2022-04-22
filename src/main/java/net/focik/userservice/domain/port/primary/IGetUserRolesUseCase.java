@@ -8,8 +8,10 @@ import java.util.List;
 public interface IGetUserRolesUseCase {
     List<Role> getUserRoles(Long idUser);
 
-    List<Role> getUserRoles();
+    List<Role> getRoles();
 
 
-    List<Privilege> getRoleDetails(Long idUser, Long idRole);
+//    Privilege getRoleDetailsDto(Long idUser, Long idRole);
+
+    Privilege getRoleDetails(Long idUser, Long idRole);
 }

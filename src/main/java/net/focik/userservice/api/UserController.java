@@ -73,14 +73,15 @@ public class UserController extends ExceptionHandling {
     public ResponseEntity<AppUser> register(@RequestBody AppUser user) throws UserNotFoundException, UserAlreadyExistsException, EmailAlreadyExistsException {
         int i=0;
         AppUser newUser = addNewUserUseCase.addNewUser(user.getFirstName(), user.getLastName(), user.getUsername(), user.getPassword(),
-                user.getEmail(), user.isEnabled(), user.isNotLocked());
+                user.getEmail(), user.isEnabled(), user.isNotLocked(), user.getIdEmployee());
         return new ResponseEntity<>(newUser, CREATED);
     }
 
     @PutMapping("/update")
     @PreAuthorize("hasAnyAuthority('ADMIN_WRITE_ALL')")
     public ResponseEntity<AppUser> updateUser(@RequestBody AppUser user){
-        AppUser updatedUser = updateUserUseCase.updateUser(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(), user.getEmail());
+        AppUser updatedUser = updateUserUseCase.updateUser(user.getId(), user.getFirstName(),
+                user.getLastName(), user.getUsername(), user.getEmail());
         return new ResponseEntity<>(updatedUser, OK);
     }
 
