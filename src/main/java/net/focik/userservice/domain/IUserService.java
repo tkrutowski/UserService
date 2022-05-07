@@ -6,7 +6,8 @@ public interface
 IUserService {
 
     AppUser addNewUser(String firstName, String lastName, String username, String password, String email,
-                       boolean enabled, boolean isNotLocked);
+                       boolean enabled, boolean isNotLocked, int idEmployee);
+
     AppUser updateUser(Long id, String newFirstName, String newLastName, String newUsername, String newEmail);
     AppUser findUserByUsername(String username);
 

@@ -9,5 +9,8 @@ public interface IPrivilegeRepository {
 
 //    Role addRole(Role role);
 //    List<Role> getAllRoles();
-     Privilege getPrivilegeByName(String name);
+//     Privilege getPrivilegeByName(String name);
+     Privilege getPrivilegeById(Long id);
+
+     Privilege save(Privilege privilege);
 }

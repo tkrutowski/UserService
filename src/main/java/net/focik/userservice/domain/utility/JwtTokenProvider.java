@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import net.focik.userservice.domain.UserPrincipal;
+import net.focik.userservice.domain.SecureUser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,21 +29,21 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateJwtAccessToken(UserPrincipal userPrincipal) {
-        String[] claims = getClaimsFromUser(userPrincipal);
+    public String generateJwtAccessToken(SecureUser secureUser) {
+        String[] claims = getClaimsFromUser(secureUser);
 
         return JWT.create()
                 .withIssuer(GET_ARRAYS_LLC) //firma lub autor lub nazwa app
                 .withAudience(GET_ARRAYS_ADMINISTRATION) //dla kogo?
                 .withIssuedAt(new Date()) //kiedy
-                .withSubject(userPrincipal.getUsername()) //musi być unique - username
+                .withSubject(secureUser.getUsername()) //musi być unique - username
 //                .withArrayClaim(AUTHORITIES, claims) //uprawnienia
-                .withClaim(AUTHORITIES, userPrincipal.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                .withClaim(AUTHORITIES, secureUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))//do kiedy
                 .sign(Algorithm.HMAC512(secret));
     }
 
-    private String[] getClaimsFromUser(UserPrincipal user) {
+    private String[] getClaimsFromUser(SecureUser user) {
         List<String> authorities = new ArrayList<>();
 
         for (GrantedAuthority grantedAuthority : user.getAuthorities()) {

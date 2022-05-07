@@ -18,6 +18,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +32,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private static final String FRONT_END_SERVER = "http://localhost:8080";
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
@@ -55,8 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().cors().and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.csrf().disable().cors(); //Invalid CORS request error when Gateway
+
+                http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests().antMatchers(SecurityConstant.PUBLIC_URLS).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -73,7 +81,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
 
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(Arrays.asList(FRONT_END_SERVER));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("X-Requested-With","Origin","Content-Type","Accept","Authorization",
+                "Access-Control-Allow-Origin","Jwt-Token"));
+
+        // This allow us to expose the headers
+        configuration.setExposedHeaders(List.of("Jwt-Token","Authorization","Access-Control-Allow-Origin"));//"Authorization",  "Access-Control-Allow-Origin",
+//                "Access-Control-Allow-Headers", "Origin", "Accept", "X-Requested-With", "Jwt-Token",
+//                "Content-Type", "Access-Control-Request-Method", "Access-Control-Request-Headers"));
+
+        //będzie stosowane do wszystkich ścieżek /**
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 //    @Bean
 //    public RoleHierarchy roleHierarchy() {
 //        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
