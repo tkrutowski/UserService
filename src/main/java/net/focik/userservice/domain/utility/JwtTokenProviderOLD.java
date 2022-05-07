@@ -26,9 +26,9 @@ public class JwtTokenProviderOLD {
 //    @Value("${jwt.secret: defywuvUKYOmqa6lMC7BgUlADXlKuq4CPYc}")
     private String secret = "defywuvUKYOmqa6lMC7BgUlADXlKuq4CPYc";
 
-    @Value("${jwt.secret2}")
-    private  String secret2;
-//    private static Algorithm algorithm = Algorithm.HMAC512(secret);
+//    @Value("${jwt.secret2}")
+//    private  String secret2;
+    private  Algorithm algorithm = Algorithm.HMAC512(secret);
 
     public String generateJwtAccessToken(Principal userPrincipal) {
         User user = (User) userPrincipal;
@@ -74,9 +74,4 @@ public class JwtTokenProviderOLD {
         return authenticationToken;
     }
 
-    public String getSecret() {
-        String temp =  secret2;
-
-        return temp;
-    }
 }

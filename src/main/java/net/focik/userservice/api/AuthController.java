@@ -29,7 +29,7 @@ import static net.focik.userservice.domain.security.constant.SecurityConstant.JW
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
-@CrossOrigin
+//@CrossOrigin
 @Log4j2
 @RequiredArgsConstructor
 @RestController
