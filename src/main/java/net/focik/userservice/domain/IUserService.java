@@ -2,8 +2,7 @@ package net.focik.userservice.domain;
 
 import java.util.List;
 
-public interface
-IUserService {
+public interface IUserService {
 
     AppUser addNewUser(String firstName, String lastName, String username, String password, String email,
                        boolean enabled, boolean isNotLocked, int idEmployee);

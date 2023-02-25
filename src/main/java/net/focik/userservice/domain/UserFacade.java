@@ -40,6 +40,7 @@ public class UserFacade {
     }
 
     public List<AppUser> getAllUsers() {
+
         return userService.getUsers();
     }
 

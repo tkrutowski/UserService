@@ -32,7 +32,8 @@ import java.util.List;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String FRONT_END_SERVER = "http://localhost:8080";
+    private static final String FRONT_END_SERVER_IN = "http://localhost:8080";
+    private static final String FRONT_END_SERVER_OUT = "https://goahead.netlify.app";
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
@@ -86,7 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Arrays.asList(FRONT_END_SERVER));
+        configuration.setAllowedOrigins(Arrays.asList(FRONT_END_SERVER_IN, FRONT_END_SERVER_OUT));
+//        configuration.addAllowedOrigin("*");
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("X-Requested-With","Origin","Content-Type","Accept","Authorization",
                 "Access-Control-Allow-Origin","Jwt-Token"));

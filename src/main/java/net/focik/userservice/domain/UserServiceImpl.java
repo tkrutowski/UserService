@@ -3,6 +3,7 @@ package net.focik.userservice.domain;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.focik.userservice.domain.exceptions.EmailAlreadyExistsException;
+import net.focik.userservice.domain.exceptions.PasswordNotFoundException;
 import net.focik.userservice.domain.exceptions.UserAlreadyExistsException;
 import net.focik.userservice.domain.exceptions.UserNotFoundException;
 import net.focik.userservice.domain.port.secondary.IAppUserRepository;
@@ -98,6 +99,8 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
         if (userById.getPassword().equals(encodePassword(currentPassword))) {
             userById.setPassword(encodePassword(newPassword));
             userRepository.save(userById);
+        }else{
+            throw new PasswordNotFoundException(PASSWORD_NOT_FOUND);
         }
     }
 
